@@ -1,0 +1,25 @@
+{
+  "name": "hubot-job-scheduler",
+  "version": "0.0.1",
+  "description": "Checks modified date of mbsdata",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "author": "JP Colomer",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "cron": "^1.2.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "co": "^4.6.0",
+    "coffeescript": "^2.1.1",
+    "hubot": "^2.19.0",
+    "hubot-test-helper": "^1.8.1",
+    "mocha": "^4.1.0",
+    "sinon": "^2.1.0"
+  }
+}
