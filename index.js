@@ -6,6 +6,8 @@ module.exports = function(bot){
     Hubot job scheduler
 
   Configuration:
+    HUBOT_JOB_CHANNEL - the default room hubot logs to
+    HUBOT_JOB_DIR - Directory containing job scripts
 
   Commands:
     hubot run job <job name>
