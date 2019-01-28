@@ -1,20 +1,19 @@
+// Description:
+//   Hubot job scheduler
+// 
+// Configuration:
+//   HUBOT_JOB_CHANNEL - the default room hubot logs to
+//   HUBOT_JOB_DIR - Directory containing job scripts
+// 
+// Commands:
+//   hubot run job <job name>
+//   hubot schedule job <job name> "cron"
+//   hubot delete scheduled job <job name>
+//   hubot list scheduled jobs
+
 var Scheduler = require('./lib/scheduler');
 
 module.exports = function(bot){
-  /*
-  Description:
-    Hubot job scheduler
-
-  Configuration:
-    HUBOT_JOB_CHANNEL - the default room hubot logs to
-    HUBOT_JOB_DIR - Directory containing job scripts
-
-  Commands:
-    hubot run job <job name>
-    hubot schedule job <job name> "cron"
-    hubot delete scheduled job <job name>
-    hubot list scheduled jobs
-    */
 
   let scheduler = () => bot.Scheduler || Scheduler;
 
