@@ -39,6 +39,9 @@ module.exports = function(bot){
       {
         send: function(msg){
           sendMessage(bot,message,msg);
+        },
+        messageRoom: function (msg, room) {
+          sendMessagetoRoom(bot, msg, room)
         }
       }
     );
