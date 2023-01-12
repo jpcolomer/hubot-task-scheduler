@@ -26,6 +26,9 @@ module.exports = function(bot){
       message.send(msg);
     }
   }
+  function sendMessagetoRoom(bot, msg, room = room) {
+    bot.messageRoom(room, msg);
+  }
 
   scheduler().initializeScheduledJobs(bot);
 
@@ -64,6 +67,9 @@ module.exports = function(bot){
           {
             send: function(msg){
               sendMessage(bot,message,msg);
+            },
+            messageRoom: function (msg, room) {
+              sendMessagetoRoom(bot, msg, room)
             }
           }
         );
