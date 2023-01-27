@@ -1,6 +1,6 @@
 var Scheduler = require('./lib/scheduler');
 
-module.exports = function(bot){
+module.exports = function (bot) {
   /*
   Description:
     Hubot job scheduler
@@ -18,76 +18,69 @@ module.exports = function(bot){
 
   let scheduler = () => bot.Scheduler || Scheduler;
 
-  var room = process.env.HUBOT_JOB_CHANNEL;
+  var mainRoom = process.env.HUBOT_JOB_CHANNEL;
 
-  function sendMessage(bot, message, msg) {
+  function sendMessage(bot, message, msg, room = mainRoom) {
     bot.messageRoom(room, msg);
-    if (message && message.envelope && message.envelope.room !== room){
+    if (message && message.envelope && message.envelope.room !== mainRoom) {
       message.send(msg);
     }
-  }
-  function sendMessagetoRoom(bot, msg, room = room) {
-    bot.messageRoom(room, msg);
   }
 
   scheduler().initializeScheduledJobs(bot);
 
-  bot.respond(/run job (.+)$/i, function(message){
+  bot.respond(/run job (.+)$/i, function (message) {
     var ref = message.match.slice(1);
     var fn = ref[0];
     return scheduler().jobFunctions[fn](
       {
-        send: function(msg){
-          sendMessage(bot,message,msg);
+        send: function (msg, room = mainRoom) {
+          sendMessage(bot, message, msg, room);
         },
-        messageRoom: function (msg, room) {
-          sendMessagetoRoom(bot, msg, room)
-        }
+        bot
       }
     );
   });
 
-  bot.respond(/delete scheduled job (.+)$/i, function(message){
+  bot.respond(/delete scheduled job (.+)$/i, function (message) {
     var ref = message.match.slice(1);
     var fn = ref[0];
-    return scheduler().deleteScheduledJob(bot,fn)
-      .then(function(){
+    return scheduler().deleteScheduledJob(bot, fn)
+      .then(function () {
         return sendMessage(bot, message, "Deleted scheduled job " + fn);
       },
-        function(err){
+        function (err) {
           return sendMessage(bot, message, "Failed deletion of scheduled job " + fn);
         });
   });
 
-  bot.respond(/schedule job (.+) [“”"'‘](.+)[“”"'’]$/i, function(message){
+  bot.respond(/schedule job (.+) [“”"'‘](.+)[“”"'’]$/i, function (message) {
     var ref = message.match.slice(1);
     var fn = ref[0];
     var cronTime = ref[1];
     message.send("Scheduling Job");
-    return scheduler().scheduleJob(bot,fn,cronTime)
-      .then(function(){
-        return scheduler().registerJob(fn,cronTime,
+    return scheduler().scheduleJob(bot, fn, cronTime)
+      .then(function () {
+        return scheduler().registerJob(fn, cronTime,
           {
-            send: function(msg){
-              sendMessage(bot,message,msg);
+            send: function (msg, room = mainRoom) {
+              sendMessage(bot, message, msg, room);
             },
-            messageRoom: function (msg, room) {
-              sendMessagetoRoom(bot, msg, room)
-            }
+            bot
           }
         );
       })
-      .then(function(){
-        return sendMessage(bot,message,`Scheduled ${fn} '${cronTime}'`);
+      .then(function () {
+        return sendMessage(bot, message, `Scheduled ${fn} '${cronTime}'`);
       });
   });
 
-  bot.respond(/list scheduled jobs/i, function(message) {
+  bot.respond(/list scheduled jobs/i, function (message) {
     var brainScheduledJobs = bot.brain.get(scheduler().JOBS);
-    var list = Object.keys(brainScheduledJobs||{}).reduce(function(o,d) {
-      o += '['+d+']: '+brainScheduledJobs[d][1]+'\n';
+    var list = Object.keys(brainScheduledJobs || {}).reduce(function (o, d) {
+      o += '[' + d + ']: ' + brainScheduledJobs[d][1] + '\n';
       return o;
     }, '');
-    sendMessage(bot,message, list.length && list || 'No scheduled jobs');
+    sendMessage(bot, message, list.length && list || 'No scheduled jobs');
   });
 }
